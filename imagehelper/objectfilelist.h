@@ -5,7 +5,7 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
- * $Id: objectfilelist.h,v 1.2 2002/12/05 15:56:29 habacker Exp $    
+ * $Id: objectfilelist.h,v 1.2 2002/12/05 15:56:29 habacker Exp $
  */
 
 #ifndef OBJECTFILELIST_H
@@ -23,41 +23,32 @@
 
 #include "objectfile.h"
 
-class ObjectFileList
-  {
+class ObjectFileList {
 
-  public:
-    ObjectFileList();
+public:
+  ObjectFileList();
 
-    // add objectfile to the list
-    bool add
-      (ObjectFile *obj);
+  // add objectfile to the list
+  bool add(ObjectFile *obj);
 
-    ObjectFile *get
-    (char *FileName);
+  ObjectFile *get(char *FileName);
 
-    // reset iterator
-    void reset(void)
-    {
-      iterator = 0;
-    }
+  // reset iterator
+  void reset(void) { iterator = 0; }
 
-    // get next list element
-    ObjectFile *getNext(void);
+  // get next list element
+  ObjectFile *getNext(void);
 
-    // get number of elements
-    int getCount(void)
-    {
-      return count;
-    }
+  // get number of elements
+  int getCount(void) { return count; }
 
-    // destructor
-    ~ObjectFileList();
-  private:
-    int count;
-    int iterator;
-    ObjectFile *list[1000];
+  // destructor
+  ~ObjectFileList();
 
-  };
+private:
+  int count;
+  int iterator;
+  ObjectFile *list[1000];
+};
 
 #endif

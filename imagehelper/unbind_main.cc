@@ -5,7 +5,7 @@
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -17,7 +17,6 @@
  *
  * $Id: unbind_main.cc,v 1.9 2003/01/03 23:16:05 habacker Exp $
  */
-
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,14 +39,13 @@ int fVerbose = 1;
 
 #if defined(__CYGWIN__) || defined(__MSYS__)
 char *Win32Path(char *s);
-char * Win32Path(char * s)
-{
+char *Win32Path(char *s) {
   if (!s || *s == '\0')
     return strdup("");
 #if defined(HAVE_DECL_CYGWIN_CONV_PATH) && HAVE_DECL_CYGWIN_CONV_PATH
   {
-    char * r = (char *)cygwin_create_path(CCP_POSIX_TO_WIN_A, s);
-	return (r ? r : strdup(""));
+    char *r = (char *)cygwin_create_path(CCP_POSIX_TO_WIN_A, s);
+    return (r ? r : strdup(""));
   }
 #else
   {
@@ -58,34 +56,22 @@ char * Win32Path(char * s)
 #endif
 }
 #else
-#define Win32Path(s)  s
+#define Win32Path(s) s
 #endif
 
-
-int
-main(int argc, char* argv[])
-{
+int main(int argc, char *argv[]) {
   ObjectFileList cache;
 
-  for (int i= 1; i < argc; i++)
-    {
-      cout << argv[i] << " ... ";
-      LinkedObjectFile dll(argv[i],true);
-      if (dll.isLoaded())
-        {
-          dll.unbind();
-          cout << "unbinded" << endl;
-        }
-      else
-        cout << "error - can't load" << endl;
-    }
+  for (int i = 1; i < argc; i++) {
+    cout << argv[i] << " ... ";
+    LinkedObjectFile dll(argv[i], true);
+    if (dll.isLoaded()) {
+      dll.unbind();
+      cout << "unbinded" << endl;
+    } else
+      cout << "error - can't load" << endl;
+  }
   return 0;
 }
 
-
-void
-Usage()
-{
-  cout << "usage: unbind <dll path>" << endl;
-}
-
+void Usage() { cout << "usage: unbind <dll path>" << endl; }

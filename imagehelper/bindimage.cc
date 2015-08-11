@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2002 Ralf Habacker 
+ * Copyright (c) 2002 Ralf Habacker
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,43 +24,27 @@
 #include "imagehelper.h"
 #include "objectfile.h"
 
-BOOL BindImageEx(
-  DWORD Flags,
-  LPCSTR ImageName,
-  LPCSTR DllPath,
-  LPCSTR SymbolPath,
-  PIMAGEHLP_STATUS_ROUTINE StatusRoutine
-)
-{
+BOOL BindImageEx(DWORD Flags, LPCSTR ImageName, LPCSTR DllPath,
+                 LPCSTR SymbolPath, PIMAGEHLP_STATUS_ROUTINE StatusRoutine) {
   ObjectFileList cache;
   LinkedObjectFile dll(ImageName);
 
-  if (!dll.isLoaded())
-    {
-      if (Base::debug)
-        std::cerr << "error: could not open file" << std::endl;
-      SetLastError(ERROR_FILE_NOT_FOUND);
-      return false;
-    }
+  if (!dll.isLoaded()) {
+    if (Base::debug)
+      std::cerr << "error: could not open file" << std::endl;
+    SetLastError(ERROR_FILE_NOT_FOUND);
+    return false;
+  }
 
-  if (!dll.rebind(cache))
-    {
-      SetLastError(ERROR_INVALID_DATA);
-      return false;
-    }
+  if (!dll.rebind(cache)) {
+    SetLastError(ERROR_INVALID_DATA);
+    return false;
+  }
 
   SetLastError(NO_ERROR);
   return true;
 }
 
-
-BOOL BindImage(
-  LPCSTR ImageName,
-  LPCSTR DllPath,
-  LPCSTR SymbolPath
-)
-{
-  return BindImageEx(0,ImageName,DllPath,SymbolPath,0);
+BOOL BindImage(LPCSTR ImageName, LPCSTR DllPath, LPCSTR SymbolPath) {
+  return BindImageEx(0, ImageName, DllPath, SymbolPath, 0);
 }
-
-
