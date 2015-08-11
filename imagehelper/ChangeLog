@@ -1,0 +1,455 @@
+2013-02-16  Corinna Vinschen  <corinna@vinschen.de>
+
+	Throughout, tweak pointer expressions to use unambiguous cast
+	on all supported platforms.
+	* sections.cc (Exports::dump): Constify argument to avoid compiler
+	warning.
+	(Imports::dump): Ditto.
+	* sections.h (SectionBase::getAdjust): Change type to ptrdiff_t.
+	(SectionBase::adjust): Ditto.
+	(Exports::dump): Constify argument in declaration to avoid compiler
+	warning.
+	(Imports::dump): Ditto.
+
+2011-01-16  Jason Tishler  <jason@tishler.net>
+
+	Prepare for release 4.4.0.
+	* Makefile.in (LIB_VERSION): Update to version 0.11.
+
+2013-01-16  Corinna Vinschen  <corinna@vinschen.de>
+
+	* objectfile.h (LinkedObjectFile::performRelocation): Change type of
+	parameter to int64_t.
+	* rebaseimage.cc (ReBaseImage64): Change type of local variable
+	difference to int64_t.
+	* sections.cc (Relocations::check): Fix formatting.
+	(Relocations::relocate): Take difference parameter as int64_t.  Call
+	cursec->debugprint rather than cursec->print and drop FIXME comment.
+	Handle Windows relocation info types IMAGE_REL_BASED_ABSOLUTE,
+	IMAGE_REL_BASED_HIGHLOW and IMAGE_REL_BASED_DIR64.  Print error
+	output if another relocation type is found.  Fix formatting.
+	* sections.h (Relocations::relocate): Change type of parameter to
+	int64_t.
+
+2012-04-30  Corinna Vinschen  <corinna@vinschen.de>
+
+	* imagehelper.h (ReBaseDropDynamicbaseFlag): Declare.
+	* rebaseimage.cc: Include windows.h.  Handle old w32api releases.
+	(ReBaseDropDynamicbaseFlag): Define.
+	(ReBaseImage64): Drop IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE flag
+	in DllCharacteristics if successfully rebased and
+
+2012-03-19  Corinna Vinschen  <corinna@vinschen.de>
+
+	* imagehelper.h (ReBaseChangeFileTime): Declare.
+	* objectfile.h (ObjectFile::setFileTime): New method.
+	* rebaseimage.cc (ReBaseChangeFileTime): Define.
+	(ReBaseImage64): Call ObjectFile::setFileTime if successfully rebased
+	and ReBaseChangeFileTime is true.
+
+2011-10-22  Jason Tishler  <jason@tishler.net>
+
+	Prepare for release 4.0.0.
+	* Makefile.in (LIB_VERSION): Update to version 0.10.
+
+2011-08-03  Corinna Vinschen  <corinna@vinschen.de>
+
+	* objectfile.cc (ObjectFile::ObjectFile); Always open file with
+	FILE_FLAG_BACKUP_SEMANTICS rights.
+
+2011-07-29  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Improve MinGW/MSYS support.
+
+	* Makefile.in: Instead of hardcoding -static-* and -D
+	overrides here, use new platform-sensitive vars defined by
+	configure.
+	* rebase_main.cc: Fix bug in GetImageInfos64 call.
+	Be explicit about CYGWIN vs MSYS.
+	* sections.h: Fix portability issues with stdint.h
+	and uintptr_t.
+
+2011-07-10  Corinna Vinschen  <corinna@vinschen.de>
+
+	* objectfile.cc (ObjectFile::ObjectFile): Add basic executable file
+	checks to avoid crashes.
+
+2011-07-10  Corinna Vinschen  <corinna@vinschen.de>
+
+	* getimageinfos.cc (GetImageInfos64): Return machine type rather than
+	just a 32/64 bit flag.
+	* imagehelper.h (GetImageInfos64): Ditto in declaration.
+	* objectfile.h (ObjectFile::machine_type): New private variable.
+	(ObjectFile::machine): New method.
+	* objectfile.cc (ObjectFile::ObjectFile): Set machine_type from file
+	header.
+
+2011-07-08  Corinna Vinschen  <corinna@vinschen.de>
+
+	Allow to work with 64 bit images and make code 64 bit clean.
+	* getimageinfos.cc (GetImageInfos64); New function, take over
+	functionality from GetImageInfos and handle 32 and 64 bit images.
+	(GetImageInfos): Just call GetImageInfos64.
+	* imagehelper.h (ReBaseImage64): Declare.
+	(GetImageInfos64): Declare.
+	* objectfile.cc (Win32Path): Fix codepage to CP_OEMCP.
+	(ObjectFile::ObjectFile): Set new is64bit_img flag.  Set ImageBase
+	according to address size of platform.
+	(LinkedObjectFile::LinkedObjectFile): Handle 64 bit images.
+	(LinkedObjectFile::rebind): Ditto.  Use uintptr_t rather than uint.
+	(LinkedObjectFile::unbind): Ditto.
+	* objectfile.h (ObjectFile::getNTHeader): Remove.
+	(ObjectFile::getNTHeader64): New method.
+	(ObjectFile::getNTHeader32): New method.
+	(ObjectFile::is64bit): New method.
+	(ObjectFile::is32bit): New method.
+	(ObjectFile::ImageBase): Convert to ULONG64.
+	(ObjectFile::ntheader): Change type to PIMAGE_NT_HEADERS32
+	and make private.
+	(ObjectFile::is64bit_img): New private BOOL member.
+	* rebase_main.cc: Convert all base variables to ULONG64 and
+	call ReBaseImage64.
+	* rebaseimage.cc (ReBaseImage64): New function, take over
+	functionality from ReBaseImage and handle 32 and 64 bit images.
+	(ReBaseImage): Just call ReBaseImage64.
+	* rebind_main.cc (main): Drop unused variables.
+	* sections.cc (Section::Section): Use uintptr_t rather than uint.
+	(Section::isIn): Handle 64 bit images.
+	(Relocations::check): Use uintptr_t rather than uint.
+	(Relocations::relocate): Ditto.
+	* sections.h (SectionList::FileBase): Convert to uintptr_t.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	Throughout, avoid all compiler warnings.
+	* Makefile.in (CFLAGS): Override to enforce -Wall -Werror.
+	(CXXFLAGS): Ditto.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* bindimage.cc (BindImageEx): Constify string arguments.
+	(BindImage): Ditto.
+	* checkimage.cc (CheckImage): Ditto.
+	* fiximage.cc (FixImage): Ditto.
+	* getimageinfos.cc (GetImageInfos): Ditto.
+	* imagehelper.h: Constify string arguments in declarations.
+	* objectfile.cc (Win32Path): Rewrite to use and return the Win32 path
+	as pointer to a static WCHAR buffer on all systems.  Simplify condition
+	to use cygwin_conv_path on Cygwin, cygwin_conv_to_win32_path on msys.
+	Use MultiByteToWideChar to create wide char pathname on non-Cygwin
+	systems.
+	(ObjectFile::ObjectFile): Constify string argument.  Store Win32 path
+	in local variable and use in calls to CreateFile.  Replace calls to
+	CreateFile with calls to CreateFileW.  Make basename a const char
+	pointer.
+	(LinkedObjectFile::LinkedObjectFile): Constify string argument.
+	* objectfile.h (ObjectFile::ObjectFile): Ditto.
+	(LinkedObjectFile::LinkedObjectFile): Ditto.
+	* rebaseimage.cc (ReBaseImage): Ditto.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.in: Autoconfify call to ar.
+
+2011-06-20  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	* .cvsignore: Add autogenerated version.c.
+
+2011-06-20  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Convert to unix format. Update documentation. Add .cvsignore.
+	* .cvsignore: New.
+	* README: Convert from dos to unix format. Add entries for
+	lib_version 0.8 and 0.9.
+	* bindimage.cc: Convert from dos to unix format.
+	* checkimage.cc: Ditto.
+	* debug.cc: Ditto.
+	* fiximage.cc: Ditto.
+	* getimageinfos.cc: Ditto.
+	* imagehelper.h: Ditto.
+	* objectfile.h: Ditto.
+	* objectfilelist.cc: Ditto.
+	* objectfilelist.h: Ditto.
+	* rebaseimage.cc: Ditto.
+
+2011-06-20  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Use autoconf. Treat as intrinsic part of rebase package,
+	rather than almost-but-not-really independent. Correct
+	gcc warnings.
+
+	* ChangeLog: Fix whitespace and formatting.
+	* INSTALL: Removed.
+	* Makefile: Removed.
+	* Makefile.cygwin: Removed.
+	* Makefile.mingw: Removed.
+	* Makefile.in: Rewrite for autoconf. Bump library version
+	due to changes below.
+	* rebase.h: Removed unused file.
+	* sections.cc: Silence gcc warnings.
+	* sections.h: Silence gcc warnings.
+	* objectfile.cc: Use cygwin_create_path() when available.
+	Accomodate MSYS.
+	* rebase_main.cc: Ditto.
+	* rebind_main.cc: Ditto.
+	* unbind_main.cc: Ditto.
+
+2003-02-17  Jason Tishler <jason@tishler.net>
+
+	* rebaseimage.cc (RebaseImage): Fixes bug when rebasing up
+	and the DLL is already based at the requested address.
+
+2003-02-14  Ralf Habacker <ralf.habacker@freenet.de>
+            Jason Tishler <jason@tishler.net>
+
+	* sections.h (debugprint): New prototype.
+	* sections.cc (debugprint): New function.
+	(Relocations::check): added additional debug printing,
+	 changed endpointer comparing.
+	(Relocations::fix): Changed endpointer comparing.
+	(Relocations::relocate): Ditto.
+
+2003-01-31  Jason Tishler <jason@tishler.net>
+
+	* rebaseimage.cc: fixed bug in dll base address adjustment.
+
+2003-01-21  Jason Tishler <jason@tishler.net>
+
+	* imagehelper.h, rebaseimage.cc: added c support
+	for function prototypes.
+
+2003-01-04  Ralf Habacker  <Ralf.habacker@freenet.de>
+
+	* sections.h: added classes BoundImportDescriptor
+	and DataDirectory
+	* objectfile.cc,sections.cc: used class ImageDescriptor,
+	BoundImageDescriptor and DataDirectory instead of
+	native windows definitions.
+
+2003-01-04  Ralf Habacker  <Ralf.habacker@freenet.de>
+
+	* rebase.doxygen.in: removed inlining sources
+
+2003-01-04  Ralf Habacker  <Ralf.habacker@freenet.de>
+
+	* section.cc (Relocations::relocate): fix return code
+	problems.
+
+2003-01-04  Ralf Habacker  <Ralf.habacker@freenet.de>
+
+	* section.h (class Imports): derivate from SectionBase
+	to avoid duplicate getAdjust() method.
+
+2003-01-03  Ralf Habacker  <Ralf.habacker@freenet.de>
+
+	* objectfile.cc,sections.cc,unbind_main,bindimage.cc,
+	checkimage.cc,fiximage.cc,getimageinfos.cc,rebaseimage.cc,
+	unbind_main.cc: completed debug message printing to cerr
+	and regular output to cout.
+
+2003-01-03  Ralf Habacker  <Ralf.habacker@freenet.de>
+
+	* objectfile.cc,sections.cc: added conditional printing
+	for debug messages.
+
+2003-01-03  Charles Wilson  <cwilson@ece.gatech.edu>
+
+	* Makefile: spelling corrected, moved to unix eol.
+	* README, ChangeLog: moved to unix eol.
+	* rebase.doxygen.in: used new name imagehelper.
+
+2003-01-02  Charles Wilson  <cwilson@ece.gatech.edu>
+
+	* Makefile.in: add bindimage.o to LIBFILES
+	change ar flags for creating static library
+	* bindimage.cc: include imagehelper.h
+	* objectfile.cc: remove dependency on stdio.h, use
+	iostream and iomanip instead.
+	(ObjectFile::ObjectFile): use std::cout instead of
+	printf, std::cerr instead of fprintf(stderr,...)
+	(LinkedObjectFile::rebind): ditto.
+	(LinkedObjectFile:LinkedObjectFile): ditto.
+	(LinkedObjectFile::PrintDependencie): ditto.
+	(LinkedObjectFile::unbind): ditto.
+	(main): ditto.
+	* objectfilelist.cc: remove dependency on stdio.h, use
+	iostream instead.
+	(main): use std::cout instead of
+	printf, std::cerr instead of fprintf(stderr,...)
+	* rebase_main.cc: remove dependency on stdio.h
+	(main): don't call GetLastError() twice, use stored
+	value in aStatus2.  Call strerror() for a more informative
+	message.
+	* rebind_main.cc: remove dependency on stdio.h
+	(Usage): use std::cout instead of printf, std::cerr
+	instead of fprintf(stderr,...)
+	* sections.cc: remove dependency on stdio.h, use
+	iostream and iomanip instead.
+	(Section::print): use std::cout instead of printf, std::cerr
+	instead of fprintf(stderr,...)
+	(Exports::Exports): ditto.
+	(Exports::dump): ditto.
+	(Imports::Imports): ditto.
+	(Imports::dump): ditto.
+	(Relocations::check): ditto.
+	(Relocations::fix): ditto.
+	(Relocations::relocate): ditto.
+	* unbind_main (Usage): ditto.
+
+2003-01-02 Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile: new file
+
+2003-01-02 18:05  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* INSTALL: new file.
+	* Makefile: moved to Makefile.in.
+	* Makefile.in: new file.
+	* Makefile.mingw, Makefile.cygwin, objectfile.cc,
+	rebase_main.cc, rebind_main.cc,unbind_main.cc:
+		added mingw support
+
+2003-01-02 16:32  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile (clean): added deleting *.a files
+
+2003-01-02 16:30  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* imagehelper.h: renamed from imagehlp.h
+	* debug.cc: renamed from imagehlpdebug.cc
+	* imagehlp.h: deleted
+	* imagehlpdebug.cc: deleted
+	* checkimage.cc, debug.cc, fiximage.cc, getimageinfos.cc,
+	rebase_main.cc,Makefile: patched for new library name imagehelper
+
+2003-01-01 12:57  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* rebase_main.cc: added image info printing
+
+2003-01-01 12:56  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* rebind_main.cc: bug fix
+
+2003-01-01 12:55  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* bindimage.cc, checkimage.cc, fiximage.cc, getimageinfos.cc,
+	rebaseimage.cc, rebind_main.cc, unbind_main.cc: some namespace
+	fixes
+
+2003-01-01 12:23  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* rebind_main.cc, unbind_main.cc: remove unused code
+
+2002-12-31 19:33  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* bindimage.cc, checkimage.cc, getimageinfos.cc, rebase_main.cc,
+	rebind_main.cc, unbind_main.cc: name space fixes
+
+2002-12-31 19:33  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile: converted eol from dos to unix
+
+2002-12-31 19:32  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* README: updated for release 0.6
+
+2002-12-31 19:31  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* checkimage.cc: class name bug fix
+
+2002-12-31 14:37  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile, rebase.doxygen.in: added doxygen support
+
+2002-12-31 13:56  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile, bindimage.cc, checkimage.cc, fiximage.cc,
+	getimageinfos.cc, imagehlp.h, imagehlpdebug.cc, objectfile.cc,
+	objectfile.h, rebaseimage.cc, unbind_main.cc: prints debug message
+	only with debug flag set
+
+2002-12-31 13:48  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* bindimage.cc, checkimage.cc, fiximage.cc, getimageinfos.cc,
+	imagehlp.h, imagehlpdebug.cc, objectfile.h, rebind_main.cc,
+	unbind_main.cc: updated indention
+
+2002-12-31 13:47  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* main.cc: moved to xxx_main.cc
+
+2002-12-31 12:09  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile: added version objectfile
+
+2002-12-31 12:08  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile: added xxx_main.cc files
+
+2002-12-31 12:08  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* rebase_main.cc, rebind_main.cc, unbind_main.cc: new files
+
+2002-12-31 11:59  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile: added libimagehlp.a target
+
+2002-12-31 11:59  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* bindimage.cc, checkimage.cc, fiximage.cc, getimageinfos.cc,
+	imagehlp.h, imagehlpdebug.cc: new files
+
+2002-12-31 11:57  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* rebase.cc, rebaseimage.cc: removed rebase.cc to rebaseimage.cc
+
+2002-12-31 11:16  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile, objectfile.cc, objectfile.h: moved objectfilelist class
+	into separate file
+
+2002-12-05 16:56  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* main.cc, objectfile.cc, objectfile.h, objectfilelist.cc,
+	objectfilelist.h, rebase.cc, rebase.h, sections.cc, sections.h:
+	first indention with gnu style
+
+2002-12-05 16:55  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile: added indent target
+
+2002-12-05 08:28  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* rebase.cc: Round NewImageSize to be consistent with MS's rebase
+
+2002-12-05 08:27  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile, README: updated to 0.5
+
+2002-12-05 08:25  anoncvs_jgb
+
+	* rebase.cc: redirect messages to stdout instead of stderr; added
+	error message in case of loading problems
+
+2002-12-05 08:19  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* objectfile.h: added some elements
+
+2002-12-05 08:18  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* sections.cc: added debug messages
+
+2002-12-05 08:18  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* objectfile.cc: enhanced path searching
+
+2002-12-05 08:17  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile: rearranged
+
+2002-08-09 11:56  Ralf Habacker <Ralf.Habacker@freenet.de>
+
+	* Makefile, README, main.cc, objectfile.cc, objectfile.h,
+	objectfilelist.cc, objectfilelist.h, rebase.cc, rebase.h,
+	sections.cc, sections.h: new files
+

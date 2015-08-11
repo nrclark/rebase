@@ -1,0 +1,463 @@
+2013-12-03  Jason Tishler  <jason@tishler.net>
+
+	Prepare for release 4.4.1.
+	* configure.ac (AC_INIT): Bump version to 4.4.1.
+
+2013-12-01  David Stacey  <drstacey@tiscali.co.uk>
+
+	* rebase.c (collect_image_info): Initialize cannot_rebase flag to 0.
+
+2013-03-05  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.in: Fix imagebase rule for parallel make.
+	* rebase.c (rebase): Fix a cast to avoid compiler warning.
+
+2013-03-05  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.in (install): Fix case of Todo file.
+
+2013-02-18  Yaakov Selkowitz  <yselkowitz@users.sourceforge.net>
+
+	* rebaseall.in: Remove duplicates from file list.
+	Find DLLs installed via CPAN and similar systems and include them
+	in the default file list.
+
+2013-02-16  Corinna Vinschen  <corinna@vinschen.de>
+
+	* peflags.c (main): Drop unused variable.
+	(do_mark): Add unambiguous casts to arguments of printf statement.
+	* rebase-db.c: Ditto, throughout.
+	* rebase-dump.c: Ditto, throughout.
+	* rebase.c: Ditto.
+	(main): Fix computation of 32 bit Cygwin DLL dead zone.  Handle x86_64
+	Cygwin as well.
+	(rebase): Remove unused variable.
+	* rebaseall.in: Take x86_64 Cygwin into account.
+
+2013-01-16  Jason Tishler  <jason@tishler.net>
+
+	Prepare for release 4.4.0.
+	* configure.ac (AC_INIT): Bump version to 4.4.0.
+	* rebase.c (version): Update copyright.
+
+2012-06-14  Achim Gratz   <stromeko@nexgo.de>
+
+	Prepare for release 4.3.0.
+	* configure.ac (AC_INIT): Bump version to 4.3.0.
+	* rebase.c (short_options): Add -O option.
+	(long_options): Add --oblivious option.
+	(image_oblivious_flag): Add new BOOL flag, false by default, set
+	by -O.
+	(main): Only report non-rebaseable DLL if they should have been
+	rebased, i.e. cannot_rebase has the MSB cleared.
+	(parse_args): Handle -O/--oblivious, set image_oblivious_flag
+	accordingly.  Fall through to -s, since it is implied.
+	(usage): Add text for -O/--oblivious.
+	(load_image_info): Set MSB of cannot_rebase for all entries found
+	in database to ensure that they are not actually touched.
+	(merge_image_info): Warn if an oblivious file is found to be in
+	the database already.  The file will not be rebased to keep the
+	database in sync.
+	(save_image_info): Return immediately if image_oblivious_flag is
+	set.
+	* rebase.db.h (_img_info): Extend cannot_rebase flag to two bit.
+	If the MSB is set, the file is protected from rebasing due to
+	--oblivious currently in effect.
+	* rebase-dump.c (help): Fix typo -- escape missing in help text.
+
+2012-06-07  Achim Gratz   <stromeko@nexgo.de>
+
+	* rebaseall.in: Improve sed regular expressions used to generate the
+	rebase list.
+
+2012-04-30  Corinna Vinschen  <corinna@vinschen.de>
+
+	* configure.ac (AC_INIT): Bump version to 4.2.0.
+	* peflagsall.in: Set DefaultDynBase to 0 to remove the dynamicbase
+	flag by default, rather than to set it.  Add .oct to DefaultSuffixes,
+	just as in rebaseall.in.  Fix help text accordingly.
+	* rebase.c (long_options): Add --no-dynamicbase.
+	(short_options): Add -n.
+	(parse_args): Handle -n/--no-dynamicbase option.  Set
+	ReBaseDropDynamicbaseFlag flag.
+	(usage): Add text for new -n/--no-dynamicbase option.
+	* rebaseall.in: Call rebase with -n flag on Cygwin.
+	* README: Document all aforementioned changes.
+
+2012-03-27  Corinna Vinschen  <corinna@vinschen.de>
+
+	* autorebase.bat: Just call rebaseall as script.
+
+2012-03-27  Corinna Vinschen  <corinna@vinschen.de>
+
+	* autorebase.hint: Disable "external-source".
+
+2012-03-26  Jason Tishler  <jason@tishler.net>
+
+	Prepare for release 4.1.0.
+	* rebase.c (version): Update copyright.
+
+2012-03-26  Jason Tishler  <jason@tishler.net>
+
+	Prepare for release 4.1.0.
+	* NEWS: Update documentation.
+
+2012-03-19  Corinna Vinschen  <corinna@vinschen.de>
+
+	* README: Document rebasell -p and -t options.  Document rebase -t
+	option.
+	* autorebase.bat: New file.
+	* autorebase.hint: New file.
+	* configure.ac: Bump package version to 4.1.0.
+	* rebase-db.h (struct _img_info): Add cannot_rebase flag.
+	* rebase.c (main): Print DLLs which couldn't be rebased to stderr.
+	(save_image_info): Set cannot_rebase flag to 0 before storing list
+	in DB.
+	(set_cannot_rebase): New function to test if a DLL is blocked by
+	another process.
+	(merge_image_info): Take DLLs blocked by other processes into account.
+	(long_options): Add --touch.
+	(short_options): Add -t.
+	(parse_args): Handle -t/--touch option. Set ReBaseChangeFileTime flag.
+	(usage): Add text for new -t/--touch option.
+	* rebaseall.in: Add -p and -t option.  Do option processing prior to
+	testing for running processes.  Only test for running processes if -p
+	option wasn't given.
+
+2011-10-24  Jason Tishler  <jason@tishler.net>
+
+	Prepare for release 4.0.1.
+	* NEWS: Update documentation.
+	* build.sh: Configure with --sysconfdir=/etc.
+	* configure.ac (AC_INIT): Update version to 4.0.1.
+
+2011-10-24  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebaseall.in: Call rebase, not ./rebase.
+
+2011-10-22  Jason Tishler  <jason@tishler.net>
+
+	Prepare for release 4.0.0.
+	* Makefile.in (SRC_DISTFILES): Remove aclocal.m4.  Add rebase-db.c,
+	rebase-db.h, rebase-dump.c, and strtoll.c.
+	* NEWS: Update documentation.
+	* configure.ac (AC_INIT): Update version to 4.0.0.
+
+2011-08-11  Corinna Vinschen  <corinna@vinschen.de>
+
+	Implement new peflags arguments to change and display stack and
+	heap sizes.
+	* peflags.c: Include limits.h and stddef.h.
+	(PRIu64, PRIx64): Define for msys.  Otherwise include inttypes.h.
+	(pe_file): Add pathname member.
+	(handle_any_sizeof): New global variable.
+	(sizeof_values_t): New type.
+	(sizeof_vals): New global variable.
+	(long_options): Add stack-reserve, stack-commit, heap-reserve,
+	heap-commit, and cygwin-heap options.
+	(short_options): Add x, X, y, Y, and z options.
+	(do_mark): Handle changes and display of sizeof values.
+	(handle_num_option): New function.
+	(parse_args): Workaround the problem that option_index is not valid
+	if the user specified a short option.  Handle new options.
+	(string_to_bool): Call string_to_ulonglong.
+	(string_to_ulonglong): Replace string_to_ulong.
+	(pe_open): Add pathname to pef.
+	(get_and_set_size): New function.
+	(get_and_set_sizes): New function.
+	(help):  Use only one single fputs call for the entire text to
+	simplify formatting.  Add text to describe the new options.
+
+2011-08-09  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebase.c (main): Skip empty arguments.
+
+2011-08-07  Corinna Vinschen  <corinna@vinschen.de>
+
+	* peflags.c (do_mark): Don't check return value of get_characteristics,
+	set_coff_characteristics and set_pe_characteristics since they always
+	succeed now.
+
+2011-08-07  Corinna Vinschen  <corinna@vinschen.de>
+
+	* peflags.c (pe_file): Move definition to start of file.
+	(pe_open): Declare.
+	(pe_close): Declare.
+	(do_mark): Call pe_open/pe_close here.  Call get/set functions
+	weith pe_file pointer instead of filename.
+	(get_characteristics): Change first parameter to pe_file pointer.
+	Drop calls to pe_open/pe_close.
+	(set_coff_characteristics): Ditto.
+	(set_pe_characteristics): Ditto.
+
+2011-08-05  Corinna Vinschen  <corinna@vinschen.de>
+
+	* peflags.c: Include sys/mman.h on Cygwin and msys.  Drop conditional
+	definitions of uint16_t and uint32_t.  Use WORD rather than uint16_t
+	throughout, size_t rather than uint32_t.
+	(IMAGE_DLLCHARACTERISTICS_DYNAMIC_BASE): Define if non-existant to
+	workaround broken w32api.  Fix usage of broken definition throughout.
+	(IMAGE_DLLCHARACTERISTICS_NX_COMPAT): Ditto.
+	(IMAGE_DLLCHARACTERISTICS_FORCE_INTEGRITY): Ditto.
+	(pe_get16): Remove.
+	(pe_get32): Remove.
+	(pe_set16): Remove.
+	(mmap): Define in terms of Win32 calls for non-Cygwin systems.
+	(munmap): Ditto.
+	(pe_file): New type to keep file mapping info.
+	(pe_open): New function to mmap PE/COFF files.
+	(pe_close): New function to unmap PE/COFF files.
+	(get_characteristics): Use pe_opem/pe_close and direct Windows
+	file structure access.
+	(set_coff_characteristics): Ditto.
+	(set_pe_characteristics): Ditto.
+
+2011-08-05  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	* NEWS: Update documentation.
+	* README: Ditto.
+	* ChangeLog: Fix some typos.
+
+2011-08-05  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebase-db.h (PRIu64, PRIx64): Define for msys, otherwise include
+	inttypes.h.
+	* rebase-dump.c (load_image_info): Use PRI{u,x}64 in printf statement
+	to avoid compiler warnings.
+	* rebase.c (PRIx64): Remove definition here.
+
+2011-08-03  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Add rebase-dump application.
+
+	* Makefile.in: Add rules to build, but not install,
+	rebase-dump.exe.
+	* rebase-db.h: Declare new dump_rebasedb* functions.
+	* rebase-db.c (dump_rebasedb_header): New function.
+	(dump_rebasedb_entry): New function.
+	(dump_rebasedb): New function.
+	* rebase-dump.c: New file.
+
+2011-07-29  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Improve MinGW/MSYS support.
+
+	* build-aux/config.guess: Add msys support.
+	* build-aux/config.sub: Add msys support.
+	* configure.ac: Specify -static-* and -D overrides, on a
+	platform-sensitive basis, here rather than hardcoding in
+	Makefile.in. Add strtoll.c to LIBOBJS for MSYS.
+	* Makefile.in: Instead of hardcoding -static-* and -D
+	overrides here, use new platform-sensitive vars defined by
+	configure.  Also, add strtoll.c.
+	* rebase.c: Handle missing inttypes.h on MSYS. Be explicit about
+	CYGWIN vs MSYS. Move db typedefs and comparison functions to
+	rebase-db.[c,h]. Use standard GPLv2+ text.
+	(strtoull) [MSYS]: Declare missing function.
+	(main) [MSYS]: Allow room for msys-1.0.dll, as with cygwin1.dll.
+	(mkstemp) [MINGW]: Fix open flags.
+	(load_image_info): Fix open flags (O_BINARY).
+	(merge_image_info) [MSYS]: Skip msys-1.0.dll, as with
+	cygwin1.dll.
+	(parse_args) [MINGW]: Use program path to determine location of
+	database.
+	* rebaseall.in: Add platform-specific code to handle msys
+	shortcomings. Use standard GPLv2+ text.
+	* peflagsall.in: Ditto.
+	* peflags.c: Use standard GPLv2+ text.
+	* rebase-db.h: New file.
+	* rebase-db.c: New file.
+	* strtoll.c: New file.
+
+2011-07-25  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebase.c (print_image_info): Compute length of longest DLL name and
+	use as field width in printf.  Default to longest available file length
+	for 80 char display.
+
+2011-07-25  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebase.c (load_image_info): Handle short reads.
+
+2011-07-23  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebase.c (parse_args): Check that base address doesn't
+	exceed valid address space for 32 bit DLLs.
+	(string_to_ulonglong): Use NULL, rather then 0, for pointer argument.
+
+2011-07-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.in (DEFS): Add define for sysconfdir.
+	(edit): Add substitute expression for sysconfdir.
+	* rebase.c: Implement rebase database.
+	(roundup): Define.
+	(roundup2): Define.
+	(machine): New global variable to keep requested machine type.
+	(image_storage_flag): New flag.
+	(force_rebase_flag): Ditto.
+	(quite): Ditto.
+	(verbose): Convert to type BOOL.
+	(progname): New variable for printing application name in error output.
+	(img_info_hdr_t): New type.
+	(img_info_t): De-const name.  Add name_size, slot_size, and
+	flag members.
+	(IMG_INFO_FILE_I386): Define database name for i386 systems.
+	(IMG_INFO_FILE_AMD64): Define database name for x86_64 systems.
+	(IMG_INFO_FILE): Define default database name.
+	(gen_progname): New function to initialize progname.
+	(main): Call gen_progname.  Only fetch Cygwin DLL info in 32 bit mode
+	for now.  Always collect file info, then rebase dependent on mode.
+	In database mode, call load_image_info, collect_image_info,
+	merge_image_info, and save_image_info.
+	(img_info_name_cmp): New comparison function.
+	(save_image_info): New function to save rebase database.
+	(load_image_info): New function to load rebase database.
+	(merge_image_info): New function to compute rebase values.
+	(collect_image_info): Fix typo in condition.  Check for rebaseable
+	file here.  Convert given filename to absolute pathname.
+	(print_image_info): Revamp to take database into account.  Add
+	collision information.
+	(rebase): Take down_flag as parameter to allow influencing the
+	algorithm from caller.  Drop call to is_rebaseable here.
+	(long_options): New option array for getopt_long.
+	(short_options): Hold short options.
+	(parse_args): Drop anOptions.  Rename anOption to opt.  Call
+	getopt_long.  Handle all new flags.
+	(usage): Change to reflect new flags.
+	(help): New function.
+	* rebaseall.in: Use database mode.  Add -4 and -8 options and
+	handle 32 and 64 bit modes.
+
+2011-07-08  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebase.c: Convert all base address variables to ULONG64
+	throughout.
+	(main): On Cygwin, call GetImageInfos64 to get Cygwin DLLs
+	data.
+	(print_image_info): Use PRIx64 in printf format string to print
+	addresses.
+	(rebase): Ditto.  Call ReBaseImage64.
+	(parse_args): Call string_to_ulonglong.
+	(string_to_ulonglong): Rename from string_to_ulong, call
+	strtoull, and return unsigned long long.
+
+2011-07-07  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.in (LDFLAGS): Don't override with -static-libstdc++
+	unconditionally.
+	(rebase): Add -static-libstdc++ to link statement.
+
+2011-06-29  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebase.c (ALLOCATION_SLOT): New variable to keep allocation
+	granularity.
+	(main): Define status once at the start of main.  Initialize
+	ALLOCATION_SLOT from system info.  Recalculate cygwin_dll_image_base
+	and cygwin_dll_image_size and add comments to explain why.
+	(rebase): Only check for Cygwin DLL if down_flag is TRUE.  Add comment
+	to explain why.
+
+2011-06-28  Corinna Vinschen  <corinna@vinschen.de>
+
+	* configure.ac (DEFAULT_OFFSET_VALUE): Define host-dependent.
+	* Makefile.in (DEFAULT_OFFSET_VALUE): Define.
+	(edit): Substitute DEFAULT_OFFSET_VALUE.
+	* rebaseall.in (DefaultOffset): Make configurable during build.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebaseall.in: Add "sys-root/mingw" to excluding sed expressions.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.in (CFLAGS): Override to enforce -Wall -Werror.
+	(CXXFLAGS): Ditto.
+	(LDFLAGS): Override to enforce static linking.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* peflags.c (long_options): Add usable single char options where
+	missing.
+	(short_options): New variable.
+	(main): Don't exit on error if there are still files to proceed on.
+	(do_mark): Add verbose flag printing.
+	(parse_args): Accommodate changes to single-char options.
+	(help): Ditto.
+	(version): Fix copyright.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebase.c (image_info_flag): New flag.
+	(img_info_list, img_info_size, img_info_max_size): New global
+	variables used to print image info.
+	(main): Call setlocale.  On Cygwin fetch base address and size of
+	Cygwin DLL.  If image_info_flag is set, call collect_image_info
+	rather than rebase in loop and eventually call print_image_info.
+	(collect_image_info): New function.
+	(img_info_cmp): New function.
+	(print_image_info): New function.
+	(rebase): On Cygwin, if a DLL has been rebased into the address space
+	taken by the Cygwin DLL, move new_image_base and rebase again.
+	(parse_args): Handle -i option.
+	(usage): Add -i option to usage output.
+	(version): Fix copyright.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* peflags.c: Avoid compiler warnings:
+	(display_flags): Convert long arguments to uint16_t.
+	(do_mark): Remove unused variable i;
+	(get_characteristics): Remove unused variable size;
+	(set_coff_characteristics): Ditto.
+	(set_pe_characteristics): Ditto.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* rebase.c (parse_args): Avoid compiler warning.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* Makefile.in (all): Prepend libimagehelper target to dependency list.
+	(libimagehelper): Rename from $(LIBIMAGEHELPER) to allow imagehelper
+	Makefile to decide if imagehelper lib has to be rebuilt.
+
+2011-06-21  Corinna Vinschen  <corinna@vinschen.de>
+
+	* configure.ac: Check for ar.
+
+2011-06-20  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Update documentation. Add .cvsignore.
+	* .cvsignore: New.
+	* NEWS: Reorganize into standard newest-first format.
+
+2011-06-20  Charles Wilson  <cygwin@cwilson.fastmail.fm>
+
+	Use autoconf. Configurable installation and SHELL.
+
+	* ChangeLog: New.
+	* COPYING: New.
+	* Changes: Renamed to...
+	* NEWS: this.
+	* build-aux/config.guess: New.
+	* build-aux/config.sub: New.
+	* build-aux/install-sh: New.
+	* Makefile: Removed.
+	* build.sh: Run configure. Modify to support MinGW
+	and MSYS, as well as Cygwin.
+	* configure.ac: New.
+	* Makefile.in: Rewrite for autoconf.
+	* peflagsall: Renamed to...
+	* peflagsall.in: this. Set PATH to directory of $0,
+	$(bindir), and /bin. Exclude dash as well as ash
+	from rebaselist, and peflags.exe itself. Don't die
+	if dash processes are running.
+	* rebaseall: Renamed to...
+	* rebaseall.in: this. Set PATH to directory of $0,
+	$(bindir), and /bin. Exclude dash as well as ash
+	from rebaselist, and rebase.exe itself.
+	* peflags.c: Accomodate MSYS.
+	* getopt.h_: Work around broken getopt_long on MSYS.
+	* getopt_long.c: Ditto.
+
+Prior: see NEWS file.
